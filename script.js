@@ -78,3 +78,16 @@ const showMovements = function (movements) {
 };
 
 showMovements(account1.movements);
+
+// Create a username for each account based on the owner's name.
+const createUsername = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLocaleLowerCase()
+      .split(' ')
+      .map(word => word[0])
+      .join('');
+  });
+};
+
+createUsername(accounts);
