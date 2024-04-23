@@ -76,7 +76,6 @@ const showMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-
 showMovements(account1.movements);
 
 // Create a username for each account based on the owner's name.
@@ -89,5 +88,11 @@ const createUsername = function (accs) {
       .join('');
   });
 };
-
 createUsername(accounts);
+
+// Calculate and display the current balance based on movements.
+const calcDisplayBalance = movements => {
+  const balance = movements.reduce((acc, movement) => acc + movement, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+calcDisplayBalance(account1.movements);
