@@ -90,9 +90,9 @@ const showMovements = function (movements) {
 };
 
 // Calculate and display the current balance based on movements.
-const calcDisplayBalance = movements => {
-  const balance = movements.reduce((acc, movement) => acc + movement, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = acc => {
+  acc.balance = acc.movements.reduce((accum, movement) => accum + movement, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
 // Calculate and display summary statistics including income, outcome, and interest.
@@ -113,6 +113,18 @@ const calcDisplaySummary = (movements, rate) => {
   labelSumInterest.textContent = `${interest}€`;
 };
 
+// Update the user interface with account information.
+const updateUI = function (acc) {
+  // Display Movments:
+  showMovements(acc.movements);
+
+  // Display Balance:
+  calcDisplayBalance(acc);
+
+  // Display Summary:
+  calcDisplaySummary(acc.movements, acc.interestRate);
+};
+
 // Event listener for login button click. Authenticates user and displays account information if successful.
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
@@ -127,14 +139,7 @@ btnLogin.addEventListener('click', function (e) {
     labelWelcome.textContent = `Welcome, ${currentAccount.owner}`;
     containerApp.style.opacity = 100;
 
-    // Display Movments:
-    showMovements(currentAccount.movements);
-
-    // Display Balance:
-    calcDisplayBalance(currentAccount.movements);
-
-    // Display Summary:
-    calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
+    updateUI(currentAccount);
   } else {
     labelWelcome.textContent = `User Not Found! :(`;
     containerApp.style.opacity = 0;
