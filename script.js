@@ -128,17 +128,18 @@ const updateUI = function (acc) {
 // Event listener for login button click. Authenticates user and displays account information if successful.
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
-  // prevent form from submitting
+  // prevent form from submitting:
   e.preventDefault();
 
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
-    // Display UI and welcome message
+    // Display UI and welcome message:
     labelWelcome.textContent = `Welcome, ${currentAccount.owner}`;
     containerApp.style.opacity = 100;
 
+    // Update UI:
     updateUI(currentAccount);
   } else {
     labelWelcome.textContent = `User Not Found! :(`;
@@ -148,4 +149,32 @@ btnLogin.addEventListener('click', function (e) {
   // Clear fields:
   inputLoginUsername.value = inputLoginPin.value = '';
   inputLoginUsername.blur();
+});
+
+// Event listener for transfer button click. Transfers funds between accounts if conditions are met.
+
+btnTransfer.addEventListener('click', function (e) {
+  // Display UI and welcome message:
+  e.preventDefault();
+
+  const recieverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  const amount = Number(inputTransferAmount.value);
+  if (
+    amount &&
+    recieverAcc &&
+    currentAccount.balance >= amount &&
+    recieverAcc?.username !== currentAccount.username
+  ) {
+    // transfare amount:
+    currentAccount.movements.push(-amount);
+    recieverAcc.movements.push(amount);
+
+    // Update UI:
+    updateUI(currentAccount);
+  }
+
+  // Clear fields:
+  inputTransferAmount.value = inputTransferTo.value = '';
 });
