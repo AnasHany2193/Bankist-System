@@ -154,7 +154,7 @@ btnLogin.addEventListener('click', function (e) {
 // Event listener for transfer button click. Transfers funds between accounts if conditions are met.
 
 btnTransfer.addEventListener('click', function (e) {
-  // Display UI and welcome message:
+  // prevent form from submitting:
   e.preventDefault();
 
   const recieverAcc = accounts.find(
@@ -177,4 +177,27 @@ btnTransfer.addEventListener('click', function (e) {
 
   // Clear fields:
   inputTransferAmount.value = inputTransferTo.value = '';
+});
+
+// Event listener for close account button click. Closes the current account if credentials match.
+btnClose.addEventListener('click', function (e) {
+  // prevent form from submitting:
+  e.preventDefault();
+
+  if (
+    currentAccount.username === inputCloseUsername?.value &&
+    currentAccount.pin === Number(inputClosePin?.value)
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    accounts.splice(index, 1);
+
+    // LogOut:
+    labelWelcome.textContent = `Log in to get started`;
+    containerApp.style.opacity = 0;
+  }
+
+  // Clear fields:
+  inputCloseUsername.value = inputClosePin.value = '';
 });
