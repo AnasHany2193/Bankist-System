@@ -96,3 +96,23 @@ const calcDisplayBalance = movements => {
   labelBalance.textContent = `${balance}€`;
 };
 calcDisplayBalance(account1.movements);
+
+// Calculate and display summary statistics including income, outcome, and interest.
+
+const calcDisplaySummary = (movements, rate) => {
+  const income = movements
+    .filter(movement => movement > 0)
+    .reduce((acc, movement) => acc + movement, 0);
+  labelSumIn.textContent = `${income}€`;
+
+  const outcome = Math.abs(
+    movements
+      .filter(movement => movement < 0)
+      .reduce((acc, movement) => acc + movement, 0)
+  );
+  labelSumOut.textContent = `${outcome}€`;
+
+  const interest = (income * rate) / 100;
+  labelSumInterest.textContent = `${interest}€`;
+};
+calcDisplaySummary(account1.movements, account1.interestRate);
