@@ -57,6 +57,18 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// Create a username for each account based on the owner's name.
+const createUsername = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLocaleLowerCase()
+      .split(' ')
+      .map(word => word[0])
+      .join('');
+  });
+};
+createUsername(accounts);
+
 // Show movements in the account.
 const showMovements = function (movements) {
   containerMovements.innerHTML = '';
@@ -76,29 +88,14 @@ const showMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-showMovements(account1.movements);
-
-// Create a username for each account based on the owner's name.
-const createUsername = function (accs) {
-  accs.forEach(function (acc) {
-    acc.username = acc.owner
-      .toLocaleLowerCase()
-      .split(' ')
-      .map(word => word[0])
-      .join('');
-  });
-};
-createUsername(accounts);
 
 // Calculate and display the current balance based on movements.
 const calcDisplayBalance = movements => {
   const balance = movements.reduce((acc, movement) => acc + movement, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
 
 // Calculate and display summary statistics including income, outcome, and interest.
-
 const calcDisplaySummary = (movements, rate) => {
   const income = movements
     .filter(movement => movement > 0)
@@ -115,4 +112,35 @@ const calcDisplaySummary = (movements, rate) => {
   const interest = (income * rate) / 100;
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements, account1.interestRate);
+
+// Event listener for login button click. Authenticates user and displays account information if successful.
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  // prevent form from submitting
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and welcome message
+    labelWelcome.textContent = `Welcome, ${currentAccount.owner}`;
+    containerApp.style.opacity = 100;
+
+    // Display Movments:
+    showMovements(currentAccount.movements);
+
+    // Display Balance:
+    calcDisplayBalance(currentAccount.movements);
+
+    // Display Summary:
+    calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
+  } else {
+    labelWelcome.textContent = `User Not Found! :(`;
+    containerApp.style.opacity = 0;
+  }
+
+  // Clear fields:
+  inputLoginUsername.value = inputLoginPin.value = '';
+  inputLoginUsername.blur();
+});
