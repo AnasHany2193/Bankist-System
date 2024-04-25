@@ -70,10 +70,12 @@ const createUsername = function (accs) {
 createUsername(accounts);
 
 // Show movements in the account.
-const showMovements = function (movements) {
+const showMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (movement, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (movement, i) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -128,7 +130,7 @@ const updateUI = function (acc) {
 // Event listener for login button click. Authenticates user and displays account information if successful.
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
-  // prevent form from submitting:
+  // prevent from submitting:
   e.preventDefault();
 
   currentAccount = accounts.find(
@@ -154,7 +156,7 @@ btnLogin.addEventListener('click', function (e) {
 // Event listener for transfer button click. Transfers funds between accounts if conditions are met.
 
 btnTransfer.addEventListener('click', function (e) {
-  // prevent form from submitting:
+  // prevent from submitting:
   e.preventDefault();
 
   const recieverAcc = accounts.find(
@@ -182,7 +184,7 @@ btnTransfer.addEventListener('click', function (e) {
 // Event listener for loan button click. Grants a loan to the current account if conditions are met.
 
 btnLoan.addEventListener('click', function (e) {
-  // prevent form from submitting:
+  // prevent from submitting:
   e.preventDefault();
 
   const amount = Number(inputLoanAmount.value);
@@ -200,7 +202,7 @@ btnLoan.addEventListener('click', function (e) {
 
 // Event listener for close account button click. Closes the current account if credentials match.
 btnClose.addEventListener('click', function (e) {
-  // prevent form from submitting:
+  // prevent from submitting:
   e.preventDefault();
 
   if (
