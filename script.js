@@ -179,6 +179,25 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferAmount.value = inputTransferTo.value = '';
 });
 
+// Event listener for loan button click. Grants a loan to the current account if conditions are met.
+
+btnLoan.addEventListener('click', function (e) {
+  // prevent form from submitting:
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+
+    // Update UI:
+    updateUI(currentAccount);
+  }
+
+  // Clear fields:
+  inputLoanAmount.value = '';
+});
+
 // Event listener for close account button click. Closes the current account if credentials match.
 btnClose.addEventListener('click', function (e) {
   // prevent form from submitting:
