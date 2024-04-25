@@ -223,12 +223,12 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
-//
+// Event listener for sort button click.
 let sorted = true;
 btnSort.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
 
-  showMovements(currentAccount.movements, !sorted);
+  showMovements(currentAccount.movements, sorted);
   sorted = !sorted;
 });
