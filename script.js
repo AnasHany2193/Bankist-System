@@ -222,3 +222,13 @@ btnClose.addEventListener('click', function (e) {
   // Clear fields:
   inputCloseUsername.value = inputClosePin.value = '';
 });
+
+//
+let sorted = true;
+btnSort.addEventListener('click', function (e) {
+  // prevent from submitting:
+  e.preventDefault();
+
+  showMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
