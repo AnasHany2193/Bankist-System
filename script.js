@@ -240,7 +240,6 @@ btnTransfer.addEventListener('click', function (e) {
 });
 
 // Event listener for loan button click. Grants a loan to the current account if conditions are met.
-
 btnLoan.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
@@ -248,7 +247,11 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Math.floor(inputLoanAmount.value);
 
   if (amount && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // add load movment
     currentAccount.movements.push(amount);
+
+    // add load date
+    currentAccount.movementsDates.push(new Date());
 
     // Update UI:
     updateUI(currentAccount);
