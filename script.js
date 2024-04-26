@@ -121,6 +121,20 @@ const createUsername = function (accs) {
 };
 createUsername(accounts);
 
+// Calculate the relative date based on the provided date.
+const calcDate = date => {
+  const calcDaysPassed = date =>
+    Math.floor(Math.abs(date - new Date()) / (1000 * 60 * 60 * 24));
+
+  const period = calcDaysPassed(date);
+
+  return period === 0
+    ? 'Today'
+    : period === 1
+    ? 'Yesterday'
+    : `${period} days ago`;
+};
+
 // Show movements in the account.
 const showMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
@@ -132,11 +146,7 @@ const showMovements = function (acc, sort = false) {
   movs.forEach(function (movement, i) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
 
-    const date = new Date(acc.movementsDates[i]);
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = calcDate(new Date(acc.movementsDates[i]));
 
     const html = `
       <div class="movements__row">
