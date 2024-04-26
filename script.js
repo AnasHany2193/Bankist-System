@@ -96,20 +96,28 @@ const createUsername = function (accs) {
 createUsername(accounts);
 
 // Show movements in the account.
-const showMovements = function (movements, sort = false) {
+const showMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
 
   movs.forEach(function (movement, i) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
+
+    const date = new Date(acc.movementsDates[i]);
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const displayDate = `${day}/${month}/${year}`;
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__date">3 days ago</div>
+        <div class="movements__date">${displayDate}</div>
         <div class="movements__value">${movement}€</div>
     </div>
   `;
@@ -148,7 +156,7 @@ const calcDisplaySummary = (movements, rate) => {
 // Update the user interface with account information.
 const updateUI = function (acc) {
   // Display Movments:
-  showMovements(acc.movements);
+  showMovements(acc);
 
   // Display Balance:
   calcDisplayBalance(acc);
@@ -276,6 +284,6 @@ btnSort.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
 
-  showMovements(currentAccount.movements, sorted);
+  showMovements(currentAccount, sorted);
   sorted = !sorted;
 });
