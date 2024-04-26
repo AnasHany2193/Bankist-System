@@ -227,6 +227,10 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movements.push(-amount);
     recieverAcc.movements.push(amount);
 
+    // add transfare date
+    currentAccount.movementsDates.push(new Date());
+    recieverAcc.movementsDates.push(new Date());
+
     // Update UI:
     updateUI(currentAccount);
   }
