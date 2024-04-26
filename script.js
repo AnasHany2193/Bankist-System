@@ -172,17 +172,6 @@ currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
 
-// Update the current date and time in the user interface.
-const now = new Date();
-const year = now.getFullYear();
-const month = `${now.getMonth() + 1}`.padStart(2, 0);
-const day = `${now.getDate()}`.padStart(2, 0);
-const period = now.getHours() > 12 ? 'PM' : 'AM';
-const hour = `${now.getHours() % 12}`.padStart(2, 0);
-const minutes = `${now.getMinutes()}`.padStart(2, 0);
-
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes} ${period}`;
-
 // Event listener for login button click. Authenticates user and displays account information if successful.
 btnLogin.addEventListener('click', function (e) {
   // prevent from submitting:
@@ -195,6 +184,17 @@ btnLogin.addEventListener('click', function (e) {
     // Display UI and welcome message:
     labelWelcome.textContent = `Welcome, ${currentAccount.owner}`;
     containerApp.style.opacity = 100;
+
+    // Update the current date and time in the user interface.
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    const day = `${now.getDate()}`.padStart(2, 0);
+    const period = now.getHours() > 12 ? 'PM' : 'AM';
+    const hour = `${now.getHours() % 12}`.padStart(2, 0);
+    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes} ${period}`;
 
     // Update UI:
     updateUI(currentAccount);
@@ -209,7 +209,6 @@ btnLogin.addEventListener('click', function (e) {
 });
 
 // Event listener for transfer button click. Transfers funds between accounts if conditions are met.
-
 btnTransfer.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
