@@ -6,6 +6,19 @@ const account1 = {
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
+
+  movementsDates: [
+    '2019-11-18T21:31:17.178Z',
+    '2019-12-23T07:42:02.383Z',
+    '2020-01-28T09:15:04.904Z',
+    '2020-04-01T10:17:24.185Z',
+    '2020-05-08T14:11:59.604Z',
+    '2020-05-27T17:01:17.194Z',
+    '2020-07-11T23:36:17.929Z',
+    '2020-07-12T10:51:36.790Z',
+  ],
+  currency: 'EUR',
+  locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -13,6 +26,19 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
+
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2020-04-10T14:43:26.374Z',
+    '2020-06-25T18:49:59.371Z',
+    '2020-07-26T12:01:20.894Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
 const account3 = {
@@ -93,7 +119,9 @@ const showMovements = function (movements, sort = false) {
 
 // Calculate and display the current balance based on movements.
 const calcDisplayBalance = acc => {
-  acc.balance = acc.movements.reduce((accum, movement) => accum + movement, 0);
+  acc.balance = acc.movements
+    .reduce((accum, movement) => accum + movement, 0)
+    .toFixed(2);
   labelBalance.textContent = `${acc.balance}€`;
 };
 
@@ -101,17 +129,19 @@ const calcDisplayBalance = acc => {
 const calcDisplaySummary = (movements, rate) => {
   const income = movements
     .filter(movement => movement > 0)
-    .reduce((acc, movement) => acc + movement, 0);
+    .reduce((acc, movement) => acc + movement, 0)
+    .toFixed(2);
   labelSumIn.textContent = `${income}€`;
 
   const outcome = Math.abs(
     movements
       .filter(movement => movement < 0)
       .reduce((acc, movement) => acc + movement, 0)
+      .toFixed(2)
   );
   labelSumOut.textContent = `${outcome}€`;
 
-  const interest = (income * rate) / 100;
+  const interest = ((income * rate) / 100).toFixed(2);
   labelSumInterest.textContent = `${interest}€`;
 };
 
@@ -127,8 +157,25 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc.movements, acc.interestRate);
 };
 
-// Event listener for login button click. Authenticates user and displays account information if successful.
 let currentAccount;
+
+// fake login
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+// Update the current date and time in the user interface.
+const now = new Date();
+const year = now.getFullYear();
+const month = `${now.getMonth() + 1}`.padStart(2, 0);
+const day = `${now.getDate()}`.padStart(2, 0);
+const period = now.getHours() > 12 ? 'PM' : 'AM';
+const hour = `${now.getHours() % 12}`.padStart(2, 0);
+const minutes = `${now.getMinutes()}`.padStart(2, 0);
+
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minutes} ${period}`;
+
+// Event listener for login button click. Authenticates user and displays account information if successful.
 btnLogin.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
@@ -136,7 +183,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     // Display UI and welcome message:
     labelWelcome.textContent = `Welcome, ${currentAccount.owner}`;
     containerApp.style.opacity = 100;
@@ -162,7 +209,7 @@ btnTransfer.addEventListener('click', function (e) {
   const recieverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   if (
     amount &&
     recieverAcc &&
@@ -187,7 +234,7 @@ btnLoan.addEventListener('click', function (e) {
   // prevent from submitting:
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   if (amount && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     currentAccount.movements.push(amount);
@@ -207,7 +254,7 @@ btnClose.addEventListener('click', function (e) {
 
   if (
     currentAccount.username === inputCloseUsername?.value &&
-    currentAccount.pin === Number(inputClosePin?.value)
+    currentAccount.pin === +inputClosePin?.value
   ) {
     const index = accounts.findIndex(
       acc => acc.username === currentAccount.username
