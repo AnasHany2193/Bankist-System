@@ -212,12 +212,39 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc.movements, acc.interestRate);
 };
 
-let currentAccount;
+// Start a logout timer for the user session.
+const startLogOutTimer = () => {
+  const tick = function () {
+    let min = String(Math.trunc(time / 60)).padStart(2, 0);
+    let sec = String(time % 60).padStart(2, 0);
 
-// fake login
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+    // in each call, print the remaining UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // when 0 seconds, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+
+      // LogOut:
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+
+    // dec 1s
+    time--;
+  };
+
+  // set time to 5 minutes
+  let time = 60 * 5;
+
+  // Call timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+
+let currentAccount, timer;
 
 // Event listener for login button click. Authenticates user and displays account information if successful.
 btnLogin.addEventListener('click', function (e) {
@@ -234,6 +261,10 @@ btnLogin.addEventListener('click', function (e) {
 
     // Update UI:
     updateUI(currentAccount);
+
+    // logOut timer:
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
   } else {
     labelWelcome.textContent = `User Not Found! :(`;
     containerApp.style.opacity = 0;
@@ -269,6 +300,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     // Update UI:
     updateUI(currentAccount);
+
+    // reset timer:
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 
   // Clear fields:
@@ -294,6 +329,10 @@ btnLoan.addEventListener('click', function (e) {
       updateUI(currentAccount);
     }, 1500);
   }
+
+  // reset timer:
+  clearInterval(timer);
+  timer = startLogOutTimer();
 
   // Clear fields:
   inputLoanAmount.value = '';
